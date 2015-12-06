@@ -738,14 +738,16 @@ var FORMTMPL = ['<div class="riform">',
                     break;
                 case 'BYENDDATE':
                     field = form.find('input[name=rirangebyenddatecalendar]');
-                    date = field.data('dateinput').getValue('yyyymmdd');
+
+					var regex = new RegExp(/\-/, 'g');
+                    date = field.val().replace(regex, '');
                     result += ';UNTIL=' + date + 'T000000';
                     if (tz === true) {
                         // Make it UTC:
                         result += 'Z';
                     }
                     human += ', ' + conf.i18n.rangeByEndDateHuman;
-                    human += ' ' + field.data('dateinput').getValue(conf.i18n.longDateFormat);
+					human += ' ' + format(new Date(date), conf.i18n.longDateFormat, conf);
                     break;
                 }
                 break;
@@ -1103,7 +1105,7 @@ var FORMTMPL = ['<div class="riform">',
                         month = until.slice(4, 6);
                         month = parseInt(month, 10) - 1;
                         day = until.slice(6, 8);
-                        input.data('dateinput').setValue(new Date(year, month, day));
+                        input.val(year + '-' + month + '-' + day);
                     }
 
                     selectors = field.find('input[name=rirangetype]');
@@ -1204,9 +1206,9 @@ var FORMTMPL = ['<div class="riform">',
         function occurrenceAdd(event) {
             event.preventDefault();
             var dateinput = form
-                .find('.riaddoccurrence input#adddate')
-                .data('dateinput');
-            var datevalue = dateinput.getValue('yyyymmddT000000');
+                .find('.riaddoccurrence input#adddate');
+			var regex = new RegExp(/\-/, 'g');
+            var datevalue = dateinput.val().replace(regex, '') + 'T000000';
             if (form.ical.RDATE === undefined) {
                 form.ical.RDATE = [];
             }
@@ -1219,7 +1221,7 @@ var FORMTMPL = ['<div class="riform">',
                 form.ical.RDATE.push(datevalue);
                 var html = ['<div class="occurrence rdate" style="display: none;">',
                         '<span class="rdate">',
-                            dateinput.getValue(conf.i18n.longDateFormat),
+                            format(new Date(dateinput.val()), conf.i18n.longDateFormat, conf),
                             '<span class="rlabel">' + conf.i18n.additionalDate + '</span>',
                         '</span>',
                         '<span class="action">',
@@ -1348,19 +1350,7 @@ var FORMTMPL = ['<div class="riform">',
                     return null;
                 }
                 // Now we have a field, see if it is a dateinput field:
-                startdate = startField.data('dateinput');
-                if (!startdate) {
-                    //No, it wasn't, just try to interpret it with Date()
-                    startdate = startField.val();
-                    if (startdate === "") {
-                        // Probably not an input at all. Try to see if it contains a date
-                        startdate = startField.text();
-                    }
-                } else {
-                    // Yes it was, get the date:
-                    startdate = startdate.getValue();
-                }
-
+                startdate = startField.val();
                 if (typeof startdate === 'string') {
                     // convert human readable, non ISO8601 dates, like
                     // '2014-04-24 19:00', where the 'T' separator is missing.
@@ -1399,14 +1389,7 @@ var FORMTMPL = ['<div class="riform">',
             endField = form.find('input[name=rirangebyenddatecalendar]');
 
             // Now we have a field, see if it is a dateinput field:
-            enddate = endField.data('dateinput');
-            if (!enddate) {
-                //No, it wasn't, just try to interpret it with Date()
-                enddate = endField.val();
-            } else {
-                // Yes it was, get the date:
-                enddate = enddate.getValue();
-            }
+            enddate = endField.val();
             enddate = new Date(enddate);
 
             // if the end date is incorrect or the field is left empty
@@ -1688,15 +1671,6 @@ var FORMTMPL = ['<div class="riform">',
         );
 
         // Pop up the little add form when clicking "Add"
-        /*
-        form.find('div.riaddoccurrence input#adddate').dateinput({
-            selectors: true,
-            lang: conf.lang,
-            format: conf.i18n.shortDateFormat,
-            firstDay: conf.firstDay,
-            yearRange: [-5, 10]
-        }).data('dateinput').setValue(new Date());
-        */
         form.find('input#addaction').click(occurrenceAdd);
 
         // When the reload button is clicked, reload
