@@ -1601,7 +1601,7 @@ var FORMTMPL = ['<div class="riform">',
           Load the templates
         */
         if (conf.title == '') {
-            conf.title = i18n.title;
+            conf.title = conf.i18n.title;
         }
 
         display = $.tmpl('displayTmpl', conf);
