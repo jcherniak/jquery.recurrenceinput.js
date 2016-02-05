@@ -739,7 +739,7 @@ var FORMTMPL = ['<div class="riform">',
                 case 'BYENDDATE':
                     field = form.find('input[name=rirangebyenddatecalendar]');
 
-					var regex = new RegExp(/\-/, 'g');
+					var regex = new RegExp("/\-/", 'g');
                     date = field.val().replace(regex, '');
                     result += ';UNTIL=' + date + 'T000000';
                     if (tz === true) {
