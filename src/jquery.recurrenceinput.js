@@ -739,15 +739,15 @@ var FORMTMPL = ['<div class="riform">',
                 case 'BYENDDATE':
                     field = form.find('input[name=rirangebyenddatecalendar]');
 
-					var regex = new RegExp("/\-/", 'g');
-                    date = field.val().replace(regex, '');
-                    result += ';UNTIL=' + date + 'T000000';
+					var regex = /\-/g;
+                    date = field.val();
+					result += ';UNTIL=' + date.replace(regex, '') + 'T000000';
                     if (tz === true) {
                         // Make it UTC:
                         result += 'Z';
                     }
                     human += ', ' + conf.i18n.rangeByEndDateHuman;
-					human += ' ' + format(new Date(date), conf.i18n.longDateFormat, conf);
+					human += ' ' + format(new Date(date + " 23:59:59"), conf.i18n.longDateFormat, conf);
                     break;
                 }
                 break;
@@ -1103,7 +1103,6 @@ var FORMTMPL = ['<div class="riform">',
                         input = field.find('input[name=rirangebyenddatecalendar]');
                         year = until.slice(0, 4);
                         month = until.slice(4, 6);
-                        month = parseInt(month, 10) - 1;
                         day = until.slice(6, 8);
                         input.val(year + '-' + month + '-' + day);
                     }
@@ -1696,12 +1695,12 @@ var FORMTMPL = ['<div class="riform">',
         );
         form.find('input[name=rirangebyoccurrencesvalue]').change(
             function (e) {
-                $(this).parent().find('input[name=rirangetype]').click().change();
+				$(this).parents('#rirangeoptions').find('input[name=rirangetype][value=BYOCCURRENCES]').prop('checked', true);
             }
         );
         form.find('input[name=rirangebyenddatecalendar]').change(function () {
             // Update only if the occurances are shown
-            $(this).parent().find('input[name=rirangetype]').click();
+			$(this).parents('#rirangeoptions').find('input[name=rirangetype][value=BYENDDATE]').prop('checked', true);
             if (form.find('.rioccurrencesactions:visible').length !== 0) {
                 updateOccurances();
             }
