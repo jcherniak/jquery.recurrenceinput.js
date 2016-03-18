@@ -26,7 +26,7 @@ tool = $.tools.recurrenceinput = {
 
         // INPUT CONFIGURATION
         hasRepeatForeverButton: true,
-		showPreview: true,
+        showPreview: true,
 
         // JQUERY TEMPLATE NAMES
         template: {
@@ -527,30 +527,30 @@ var FORMTMPL = ['<div class="riform">',
                         '</div>',
                     '</div>',
                 '</div>',
-				'{{if showPreview}}',
-					'<div class="rioccurrencesactions">',
-						'<div class="rioccurancesheader">',
-							'<h4>${i18n.preview}</h4>',
-							'<span class="refreshbutton action">',
-								'<a class="rirefreshbutton btn btn-default" href="#" title="${i18n.refresh}">',
-									'${i18n.refresh}',
-								'</a>',
-							'</span>',
-						'</div>',
-					'</div>',
-					'<div class="rioccurrences">',
-					'</div>',
-					'<div class="rioccurrencesactions">',
-						'<div class="rioccurancesheader">',
-							'<h4>${i18n.addDate}</h4>',
-						'</div>',
-						'<div class="riaddoccurrence">',
-							'<div class="errorarea"></div>',
-							'<input type="date" name="adddate" id="adddate" />',
-							'<input type="button" name="addaction" id="addaction" value="${i18n.add}">',
-						'</div>',
-					'</div>',
-				'{{/if}}',
+                '{{if showPreview}}',
+                    '<div class="rioccurrencesactions">',
+                        '<div class="rioccurancesheader">',
+                            '<h4>${i18n.preview}</h4>',
+                            '<span class="refreshbutton action">',
+                                '<a class="rirefreshbutton btn btn-default" href="#" title="${i18n.refresh}">',
+                                    '${i18n.refresh}',
+                                '</a>',
+                            '</span>',
+                        '</div>',
+                    '</div>',
+                    '<div class="rioccurrences">',
+                    '</div>',
+                    '<div class="rioccurrencesactions">',
+                        '<div class="rioccurancesheader">',
+                            '<h4>${i18n.addDate}</h4>',
+                        '</div>',
+                        '<div class="riaddoccurrence">',
+                            '<div class="errorarea"></div>',
+                            '<input type="date" name="adddate" id="adddate" />',
+                            '<input type="button" name="addaction" id="addaction" value="${i18n.add}">',
+                        '</div>',
+                    '</div>',
+                '{{/if}}',
 
                 '<div class="ributtons">',
                     '<input',
@@ -739,15 +739,15 @@ var FORMTMPL = ['<div class="riform">',
                 case 'BYENDDATE':
                     field = form.find('input[name=rirangebyenddatecalendar]');
 
-					var regex = /\-/g;
+                    var regex = /\-/g;
                     date = field.val();
-					result += ';UNTIL=' + date.replace(regex, '') + 'T000000';
+                    result += ';UNTIL=' + date.replace(regex, '') + 'T000000';
                     if (tz === true) {
                         // Make it UTC:
                         result += 'Z';
                     }
                     human += ', ' + conf.i18n.rangeByEndDateHuman;
-					human += ' ' + format(new Date(date + "T23:59:59"), conf.i18n.longDateFormat, conf);
+                    human += ' ' + format(new Date(date + "T23:59:59"), conf.i18n.longDateFormat, conf);
                     break;
                 }
                 break;
@@ -1206,7 +1206,7 @@ var FORMTMPL = ['<div class="riform">',
             event.preventDefault();
             var dateinput = form
                 .find('.riaddoccurrence input#adddate');
-			var regex = new RegExp(/\-/, 'g');
+            var regex = new RegExp(/\-/, 'g');
             var datevalue = dateinput.val().replace(regex, '') + 'T000000';
             if (form.ical.RDATE === undefined) {
                 form.ical.RDATE = [];
@@ -1665,7 +1665,7 @@ var FORMTMPL = ['<div class="riform">',
                 // Load the form to set up the right fields to show, etc.
                 loadData(textarea.val());
                 e.preventDefault();
-				bootstrapModal.modal('show');
+                bootstrapModal.modal('show');
             }
         );
 
@@ -1695,12 +1695,12 @@ var FORMTMPL = ['<div class="riform">',
         );
         form.find('input[name=rirangebyoccurrencesvalue]').change(
             function (e) {
-				$(this).parents('#rirangeoptions').find('input[name=rirangetype][value=BYOCCURRENCES]').prop('checked', true);
+                $(this).parents('#rirangeoptions').find('input[name=rirangetype][value=BYOCCURRENCES]').prop('checked', true);
             }
         );
         form.find('input[name=rirangebyenddatecalendar]').change(function () {
             // Update only if the occurances are shown
-			$(this).parents('#rirangeoptions').find('input[name=rirangetype][value=BYENDDATE]').prop('checked', true);
+            $(this).parents('#rirangeoptions').find('input[name=rirangetype][value=BYENDDATE]').prop('checked', true);
             if (form.find('.rioccurrencesactions:visible').length !== 0) {
                 updateOccurances();
             }
