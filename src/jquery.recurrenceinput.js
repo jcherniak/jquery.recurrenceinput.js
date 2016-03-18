@@ -747,7 +747,7 @@ var FORMTMPL = ['<div class="riform">',
                         result += 'Z';
                     }
                     human += ', ' + conf.i18n.rangeByEndDateHuman;
-					human += ' ' + format(new Date(date + " 23:59:59"), conf.i18n.longDateFormat, conf);
+					human += ' ' + format(new Date(date + "T23:59:59"), conf.i18n.longDateFormat, conf);
                     break;
                 }
                 break;
