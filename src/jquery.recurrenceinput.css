@@ -1,8 +1,9 @@
 span.form-control > input {
 	height: 22px;
+	line-height: 22px;
 }
 
-div.input-group-nofill .input-group-addon, 
+div.input-group-nofill .input-group-addon,
 div.input-group-nofill .input-group-btn {
 	width: inherit;
 }
