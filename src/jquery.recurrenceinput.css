@@ -1,3 +1,7 @@
+div.riform.panel {
+	max-width: 450px;
+}
+
 span.form-control > input {
 	height: 22px;
 	line-height: 22px;
