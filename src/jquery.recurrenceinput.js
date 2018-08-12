@@ -106,8 +106,8 @@ tool = $.tools.recurrenceinput = {
 tool.localize("en", {
     displayUnactivate: 'Does not repeat',
     displayActivate: 'Repeats every',
-    add_rules: 'Add',
-    edit_rules: 'Edit',
+	add_rules: '<i class="glyphicon glyphicon-plus"></i> Add',
+	edit_rules: '<i class="glyphicon glyphicon-pencil"></i> Edit',
     delete_rules: 'Delete',
     add:  'Add',
     refresh: 'Refresh',
@@ -267,8 +267,7 @@ var DISPLAYTMPL = ['<div class="ridisplay form-control collapse in">',
                 '${i18n.delete_rules}',
             '</a>',
             '<a href="#" name="riedit" class="btn btn-success pull-right btn-xs">',
-                '<i class="glyphicon glyphicon-plus"></i>',
-                '${i18n.add_rules}', 
+                '${i18n.add_rules}',
             '</a>',
         '{{/if}}',
         '<label class="ridisplay">${i18n.displayUnactivate}</label>',
@@ -1465,7 +1464,7 @@ var FORMTMPL = ['<div class="riform panel panel-default collapse">',
             if (startdate !== null) {
                 loadOccurrences(startdate, widgetSaveToRfc5545(form, conf, false).result, 0, true);
             }
-            display.find('a[name="riedit"]').text(conf.i18n.edit_rules);
+            display.find('a[name="riedit"]').html(conf.i18n.edit_rules);
             display.find('a[name="ridelete"]').show();
         }
 
@@ -1474,7 +1473,7 @@ var FORMTMPL = ['<div class="riform panel panel-default collapse">',
             label.text(conf.i18n.displayUnactivate);
             textarea.val('').change();  // Clear the textarea.
             display.find('.rioccurrences').hide();
-            display.find('a[name="riedit"]').text(conf.i18n.add_rules);
+			display.find('a[name="riedit"]').html(conf.i18n.add_rules);
             display.find('a[name="ridelete"]').hide();
         }
 
