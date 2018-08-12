@@ -27,6 +27,7 @@ tool = $.tools.recurrenceinput = {
         // INPUT CONFIGURATION
         hasRepeatForeverButton: true,
         showPreview: true,
+        hasByOccurrencesOption: true,
 
         // JQUERY TEMPLATE NAMES
         template: {
@@ -198,6 +199,7 @@ tool.localize("en", {
     noRepeatOn: 'Error: "Repeat on"-value must be selected',
     pastEndDate: 'Error: End date cannot be before start date',
     noEndAfterNOccurrences: 'Error: The "After N occurrences"-field must be between 1 and 1000',
+    noRangeTypeSelected: 'Error: An "End recurrence" option must be checked',
     alreadyAdded: 'This date was already added',
 
     rtemplate: {
@@ -257,7 +259,7 @@ var OCCURRENCETMPL = ['<div class="rioccurrences">',
 
 $.template('occurrenceTmpl', OCCURRENCETMPL);
 
-var DISPLAYTMPL = ['<div class="ridisplay form-control">',
+var DISPLAYTMPL = ['<div class="ridisplay form-control collapse in">',
     '<div class="rimain">',
         '{{if !readOnly}}',
             '<a href="#" name="ridelete" class="btn btn-danger pull-right btn-xs" style="display:none">',
@@ -275,10 +277,10 @@ var DISPLAYTMPL = ['<div class="ridisplay form-control">',
 
 $.template('displayTmpl', DISPLAYTMPL);
 
-var FORMTMPL = ['<div class="riform">',
-        '<form>',
-            '<h1>${title}</h1>',
-            '<div id="messagearea" style="display: none;">',
+var FORMTMPL = ['<div class="riform panel panel-default collapse">',
+        '<div class="panel-heading"><h4 class="panel-title">${title}</h4></div>',
+        '<div class="panel-body">',
+            '<div id="messagearea" class="alert alert-danger" style="display: none;">',
             '</div>',
             '<div id="rirtemplate" class="form-group">',
                 '<label for="${name}rtemplate">',
@@ -487,26 +489,28 @@ var FORMTMPL = ['<div class="riform">',
                                 '</span>',
                             '</div>',
                           '{{/if}}',
-                            '<div class="input-group">',
-                                '<span class="input-group-addon">',
-                                    '<input',
-                                        'type="radio"',
-                                        'checked="checked"',
-                                        'value="BYOCCURRENCES"',
-                                        'name="rirangetype"',
-                                        'id="${name}rangetype:BYOCCURRENCES"/>',
-                                '</span>',
-                                '<span class="form-control">',
-                                    '<label for="${name}rangetype:BYOCCURRENCES">',
-                                        '${i18n.rangeByOccurrences1}',
-                                    '</label>',
-                                    '<input',
-                                        'type="text" size="3"',
-                                        'value="7"',
-                                        'name="rirangebyoccurrencesvalue" />',
-                                    '${i18n.rangeByOccurrences2}',
-                                '</span>',
-                            '</div>',
+                          '{{if hasByOccurrencesOption}}',
+                                '<div class="input-group">',
+                                    '<span class="input-group-addon">',
+                                        '<input',
+                                            'type="radio"',
+                                            'checked="checked"',
+                                            'value="BYOCCURRENCES"',
+                                            'name="rirangetype"',
+                                            'id="${name}rangetype:BYOCCURRENCES"/>',
+                                    '</span>',
+                                    '<span class="form-control">',
+                                        '<label for="${name}rangetype:BYOCCURRENCES">',
+                                            '${i18n.rangeByOccurrences1}',
+                                        '</label>',
+                                        '<input',
+                                            'type="text" size="3"',
+                                            'value="7"',
+                                            'name="rirangebyoccurrencesvalue" />',
+                                        '${i18n.rangeByOccurrences2}',
+                                    '</span>',
+                                '</div>',
+                            '{{/if}}',
                             '<div class="input-group">',
                                 '<span class="input-group-addon">',
                                     '<input',
@@ -562,7 +566,7 @@ var FORMTMPL = ['<div class="riform">',
                         'class="risavebutton btn btn-success ${ributtonExtraClass}"',
                         'value="${i18n.save}" />',
                 '</div>',
-            '</form></div>'].join('\n');
+            '</div></div>'].join('\n');
 
     $.template('formTmpl', FORMTMPL);
 
@@ -1136,7 +1140,7 @@ var FORMTMPL = ['<div class="riform">',
     function RecurrenceInput(conf, textarea) {
 
         var self = this;
-        var form, display, bootstrapModal;
+        var form, display;
 
         // Extend conf with non-configurable data used by templates.
         var orderedWeekdays = [];
@@ -1485,12 +1489,14 @@ var FORMTMPL = ['<div class="riform">',
 
             // Hide add field errors
             form.find('.riaddoccurrence div.errorarea').text('').hide();
+            form.find('*').removeClass('has-error');
 
             // Repeats Daily
             if (form.find('#ridailyinterval').css('display') === 'block') {
                 // Check repeat every field
                 num = findIntField('ridailyinterval', form);
                 if (!num || num < 1 || num > 1000) {
+                    form.find('#ridailyinterval').addClass('has-error');
                     messagearea.text(conf.i18n.noRepeatEvery).show();
                     return false;
                 }
@@ -1501,6 +1507,7 @@ var FORMTMPL = ['<div class="riform">',
                 // Check repeat every field
                 num = findIntField('riweeklyinterval', form);
                 if (!num || num < 1 || num > 1000) {
+                    form.find('#riweeklyinterval').addClass('has-error');
                     messagearea.text(conf.i18n.noRepeatEvery).show();
                     return false;
                 }
@@ -1511,12 +1518,14 @@ var FORMTMPL = ['<div class="riform">',
                 // Check repeat every field
                 num = findIntField('rimonthlyinterval', form);
                 if (!num || num < 1 || num > 1000) {
+                    form.find('#rimonthlyinterval').addClass('has-error');
                     messagearea.text(conf.i18n.noRepeatEvery).show();
                     return false;
                 }
 
                 // Check repeat on
                 if (form.find('#rimonthlyoptions input:checked').length === 0) {
+                    form.find('#rimonthlyoptions').addClass('has-error');
                     messagearea.text(conf.i18n.noRepeatOn).show();
                     return false;
                 }
@@ -1527,23 +1536,34 @@ var FORMTMPL = ['<div class="riform">',
                 // Check repeat every field
                 num = findIntField('riyearlyinterval', form);
                 if (!num || num < 1 || num > 1000) {
+                    form.find('#riyearlyinterval').addClass('has-error');
                     messagearea.text(conf.i18n.noRepeatEvery).show();
                     return false;
                 }
 
                 // Check repeat on
                 if (form.find('#riyearlyoptions input:checked').length === 0) {
+                    form.find('#riyearlyoptions').addClass('has-error');
                     messagearea.text(conf.i18n.noRepeatOn).show();
                     return false;
                 }
             }
 
             // End recurrence fields
+            if (form.find('select#rirtemplate').val() != 'none') {
+                // Ensure an end option is checked
+                if (form.find('input[name="rirangetype"]:visible:checked').length == 0) {
+                    form.find('#rirangeoptions').addClass('has-error');
+                    messagearea.text(conf.i18n.noRangeTypeSelected).show();
+                    return false;
+                }
+            }
 
             // If after N occurences is selected, check its value
             if (form.find('input[value="BYOCCURRENCES"]:visible:checked').length > 0) {
                 num = findIntField('rirangebyoccurrencesvalue', form);
                 if (!num || num < 1 || num > 1000) {
+                    form.find('#rirangeoptions').addClass('has-error');
                     messagearea.text(conf.i18n.noEndAfterNOccurrences).show();
                     return false;
                 }
@@ -1554,6 +1574,7 @@ var FORMTMPL = ['<div class="riform">',
                 endDate = findEndDate(form);
                 if (!endDate) {
                     // if endDate is null that means the field is empty
+                    form.find('#rirangeoptions').addClass('has-error');
                     messagearea.text(conf.i18n.noEndDate).show();
                     return false;
                 } else if (endDate < startDate) {
@@ -1571,7 +1592,8 @@ var FORMTMPL = ['<div class="riform">',
             // if no field errors, process the request
             if (checkFields(form)) {
                 // close overlay
-                bootstrapModal.modal('hide');
+                display.addClass('in');
+                form.removeClass('in');
 
                 recurrenceOn();
             }
@@ -1580,7 +1602,8 @@ var FORMTMPL = ['<div class="riform">',
         function cancel(event) {
             event.preventDefault();
             // close overlay
-            bootstrapModal.modal('hide');
+            display.addClass('in');
+            form.removeClass('in');
         }
 
         function updateOccurances() {
@@ -1606,38 +1629,9 @@ var FORMTMPL = ['<div class="riform">',
         display = $.tmpl('displayTmpl', conf);
         form = $.tmpl('formTmpl', conf);
 
-        // Make an overlay and hide it
-        var h1 = form.find('h1');
-        var footerButtons = form.find('.ributtons');
-
-        var modalId = textarea.attr('id') + '-modal';
-
-        bootstrapModal = $(
-            '<div id="' + modalId + '" class="modal" role="dialog">' + 
-                '<div class="modal-dialog">' + 
-                    '<div class="modal-content">' + 
-                        '<div class="modal-header">' +
-                            '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + 
-                            '<h4 class="modal-title">' + h1.html() + '</h4>' +
-                        '</div>' + 
-                        '<div class="modal-body">' + 
-                        '</div>' + 
-                    '</div>' + 
-                '</div>' +
-            '</div>'
-        );
-
-        h1.remove();
-
-        footerButtons.removeClass('ributtons').addClass('modal-footer');
-        bootstrapModal.find('.modal-body').after(footerButtons);
-
-        bootstrapModal.appendTo('body');
-        bootstrapModal.modal({show: false});
-
-        form.appendTo(bootstrapModal.find('.modal-body'));
-
         form.ical = {RDATE: [], EXDATE: []};
+
+        form.find('.rifield').hide();
 
         if (textarea.val()) {
             var result = widgetLoadFromRfc5545(form, conf, textarea.val(), false);
@@ -1665,7 +1659,8 @@ var FORMTMPL = ['<div class="riform">',
                 // Load the form to set up the right fields to show, etc.
                 loadData(textarea.val());
                 e.preventDefault();
-                bootstrapModal.modal('show');
+                form.addClass('in');
+                display.removeClass('in');
             }
         );
 
@@ -1718,8 +1713,8 @@ var FORMTMPL = ['<div class="riform">',
         /*
           Save and cancel methods:
         */
-        bootstrapModal.find('.ricancelbutton').click(cancel);
-        bootstrapModal.find('.risavebutton').click(save);
+        form.find('.ricancelbutton').click(cancel);
+        form.find('.risavebutton').click(save);
 
         /*
          * Public API of RecurrenceInput
@@ -1752,6 +1747,7 @@ var FORMTMPL = ['<div class="riform">',
         // our recurrenceinput widget instance
         var recurrenceinput = new RecurrenceInput(config, this);
         // hide textarea and place display widget after textarea
+        this.after(recurrenceinput.form);
         this.after(recurrenceinput.display);
 
         // hide the textarea
